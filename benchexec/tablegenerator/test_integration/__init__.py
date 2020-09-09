@@ -12,12 +12,14 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import platform
 
 import benchexec
 import benchexec.util
 
 sys.dont_write_bytecode = True  # prevent creation of .pyc files
 
+platform = platform.system()
 here = os.path.relpath(os.path.dirname(__file__))
 base_dir = os.path.join(here, "..", "..", "..")
 bin_dir = os.path.join(base_dir, "bin")
@@ -73,7 +75,7 @@ class TableGeneratorIntegrationTests(unittest.TestCase):
         output_path=None,
     ):
         output = self.run_cmd(
-            *[tablegenerator] + list(args) + ["--outputpath", output_path or self.tmp]
+            *(["python3", tablegenerator] if platform == "Windows" else [tablegenerator]) + list(args) + ["--outputpath", output_path or self.tmp]
         )
         generated_files = {os.path.join(self.tmp, x) for x in os.listdir(self.tmp)}
 
