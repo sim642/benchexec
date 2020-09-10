@@ -75,7 +75,7 @@ class TableGeneratorIntegrationTests(unittest.TestCase):
         output_path=None,
     ):
         output = self.run_cmd(
-            *(["python3", tablegenerator] if platform == "Windows" else [tablegenerator]) + list(args) + ["--outputpath", output_path or self.tmp]
+            *([sys.executable, tablegenerator] if platform == "Windows" else [tablegenerator]) + list(args) + ["--outputpath", output_path or self.tmp]
         )
         generated_files = {os.path.join(self.tmp, x) for x in os.listdir(self.tmp)}
 
