@@ -19,11 +19,12 @@ import benchexec.util
 
 sys.dont_write_bytecode = True  # prevent creation of .pyc files
 
-platform = platform.system()
 here = os.path.relpath(os.path.dirname(__file__))
 base_dir = os.path.join(here, "..", "..", "..")
 bin_dir = os.path.join(base_dir, "bin")
 tablegenerator = os.path.join(bin_dir, "table-generator")
+if platform.system() == "Windows":
+    tablegenerator = sys.executable + " " + tablegenerator
 
 # Set to True to let tests overwrite the expected result with the actual result
 # instead of letting them fail.
@@ -75,7 +76,7 @@ class TableGeneratorIntegrationTests(unittest.TestCase):
         output_path=None,
     ):
         output = self.run_cmd(
-            *([sys.executable, tablegenerator] if platform == "Windows" else [tablegenerator]) + list(args) + ["--outputpath", output_path or self.tmp]
+            *[tablegenerator] + list(args) + ["--outputpath", output_path or self.tmp]
         )
         generated_files = {os.path.join(self.tmp, x) for x in os.listdir(self.tmp)}
 
