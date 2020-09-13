@@ -22,9 +22,9 @@ sys.dont_write_bytecode = True  # prevent creation of .pyc files
 here = os.path.relpath(os.path.dirname(__file__))
 base_dir = os.path.join(here, "..", "..", "..")
 bin_dir = os.path.join(base_dir, "bin")
-tablegenerator = os.path.join(bin_dir, "table-generator")
+tablegenerator = [os.path.join(bin_dir, "table-generator")]
 if platform.system() == "Windows":
-    tablegenerator = sys.executable + " " + tablegenerator
+    tablegenerator = [sys.executable] + tablegenerator
 
 # Set to True to let tests overwrite the expected result with the actual result
 # instead of letting them fail.
@@ -76,7 +76,7 @@ class TableGeneratorIntegrationTests(unittest.TestCase):
         output_path=None,
     ):
         output = self.run_cmd(
-            *[tablegenerator] + list(args) + ["--outputpath", output_path or self.tmp]
+            *tablegenerator + list(args) + ["--outputpath", output_path or self.tmp]
         )
         generated_files = {os.path.join(self.tmp, x) for x in os.listdir(self.tmp)}
 
@@ -191,14 +191,14 @@ class TableGeneratorIntegrationTests(unittest.TestCase):
         self.assertEqual(
             1,
             subprocess.call(
-                [tablegenerator], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+                tablegenerator, stdout=subprocess.PIPE, stderr=subprocess.PIPE
             ),
             "expected error return code",
         )
 
     def test_files_and_table_definition_given(self):
         cmdline = [
-            tablegenerator,
+            *tablegenerator,
             "-x",
             os.path.join(here, "simple-table.xml"),
             result_file("test.2015-03-03_1613.results.predicateAnalysis.xml"),
@@ -210,7 +210,7 @@ class TableGeneratorIntegrationTests(unittest.TestCase):
         )
 
     def test_empty_table_definition_given(self):
-        cmdline = [tablegenerator, "-x", os.path.join(here, "table-only-columns.xml")]
+        cmdline = [*tablegenerator, "-x", os.path.join(here, "table-only-columns.xml")]
         self.assertEqual(
             2,
             subprocess.call(cmdline, stdout=subprocess.PIPE, stderr=subprocess.PIPE),
