@@ -16,6 +16,7 @@ import io
 import logging
 import os
 import urllib.request
+import platform
 
 
 class TaskId(collections.namedtuple("TaskId", "name property expected_result runset")):
@@ -225,6 +226,12 @@ def read_bundled_file(name):
     except NameError:
         with open(name, mode="r") as f:
             return f.read()
+
+def fix_path_if_on_windows(path):
+    return path if platform.system() != "Windows" else path.replace("\\", "/")
+
+def fix_line_endings_if_on_windows(str):
+    return str if platform.system() != "Windows" else str.replace("\r\n", "\n")
 
 
 class _DummyFuture(object):
