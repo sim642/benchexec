@@ -799,7 +799,9 @@ class RunResult(object):
             )
             path_in_zip = urllib.parse.unquote(
                 # os.path.relpath creates os-dependant paths, but windows separators can produce errors with zipfile lib
-                util.fix_path_if_on_windows(os.path.relpath(url_parts.path, os.path.dirname(log_zip_path)))
+                util.fix_path_if_on_windows(
+                    os.path.relpath(url_parts.path, os.path.dirname(log_zip_path))
+                )
             )
             if log_zip_url.startswith("file:///") and not log_zip_path.startswith("/"):
                 # Replace file:/// with file: for relative paths,
@@ -1247,8 +1249,13 @@ def create_tables(
     # get common folder of sourcefiles
     # os.path.commonprefix can return a partial path component (does not truncate on /)
     common_prefix = os.path.commonprefix([r.id.name for r in rows])
-    separator = "/" if platform.system() != "Windows" or common_prefix.startswith("http://") \
-        or common_prefix.startswith("https://") else "\\"
+    separator = (
+        "/"
+        if platform.system() != "Windows"
+        or common_prefix.startswith("http://")
+        or common_prefix.startswith("https://")
+        else "\\"
+    )
     common_prefix = common_prefix[: common_prefix.rfind(separator) + 1]
     for row in rows:
         Row.set_relative_path(row, common_prefix, outputPath)

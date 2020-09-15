@@ -490,7 +490,11 @@ def _create_link(href, base_dir, runResult=None, href_base=None):
 
     source_file = (
         # os.path.relpath creates os-dependant paths, so standardize the output between OSs
-        util.fix_path_if_on_windows(os.path.relpath(runResult.task_id.name, href_base or ".")) if runResult else None
+        util.fix_path_if_on_windows(
+            os.path.relpath(runResult.task_id.name, href_base or ".")
+        )
+        if runResult
+        else None
     )
 
     if util.is_url(href):

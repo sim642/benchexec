@@ -24,10 +24,10 @@ here = os.path.relpath(os.path.dirname(__file__))
 base_dir = os.path.join(here, "..", "..", "..")
 bin_dir = os.path.join(base_dir, "bin")
 tablegenerator = [os.path.join(bin_dir, "table-generator")]
-lineEnding = "\n"
+line_ending = "\n"
 if platform.system() == "Windows":
     tablegenerator = [sys.executable] + tablegenerator
-    lineEnding = "\r\n"
+    line_ending = "\r\n"
 
 # Set to True to let tests overwrite the expected result with the actual result
 # instead of letting them fail.
@@ -425,7 +425,7 @@ class TableGeneratorIntegrationTests(unittest.TestCase):
             ],
             table_prefix="test.2015-03-03_1613.results.predicateAnalysis",
             # 3 correct, 1 incorrect, 0 unknown (1 without property is ignored)
-            expected_counts="REGRESSIONS 0{le}STATS{le}3 1 0".format(le=lineEnding),
+            expected_counts="REGRESSIONS 0{le}STATS{le}3 1 0".format(le=line_ending),
         )
 
     def test_dump_count_single_table2(self):
@@ -433,7 +433,7 @@ class TableGeneratorIntegrationTests(unittest.TestCase):
             ["--dump", result_file("test.2015-03-03_1613.results.valueAnalysis.xml")],
             table_prefix="test.2015-03-03_1613.results.valueAnalysis",
             # 2 correct, 0 incorrect, 1 unknown
-            expected_counts="REGRESSIONS 0{le}STATS{le}2 0 1".format(le=lineEnding),
+            expected_counts="REGRESSIONS 0{le}STATS{le}2 0 1".format(le=line_ending),
         )
 
     def test_dump_count_multi_table(self):
@@ -447,7 +447,9 @@ class TableGeneratorIntegrationTests(unittest.TestCase):
             ],
             table_prefix="test.2015-03-03_1613.table",
             diff_prefix="test.2015-03-03_1613.diff",
-            expected_counts="REGRESSIONS 2{le}STATS{le}3 1 0{le}2 0 1".format(le=lineEnding),
+            expected_counts="REGRESSIONS 2{le}STATS{le}3 1 0{le}2 0 1".format(
+                le=line_ending
+            ),
         )
 
     def test_dump_count_multi_table_reverse(self):
@@ -461,7 +463,9 @@ class TableGeneratorIntegrationTests(unittest.TestCase):
             ],
             table_prefix="test.2015-03-03_1613-reverse.table",
             diff_prefix="test.2015-03-03_1613-reverse.diff",
-            expected_counts="REGRESSIONS 1{le}STATS{le}2 0 1{le}3 1 0".format(le=lineEnding),
+            expected_counts="REGRESSIONS 1{le}STATS{le}2 0 1{le}3 1 0".format(
+                le=line_ending
+            ),
         )
 
     def test_dump_count2(self):
@@ -469,7 +473,9 @@ class TableGeneratorIntegrationTests(unittest.TestCase):
             ["-x", os.path.join(here, "smt.xml"), "--dump"],
             table_prefix="smt.table",
             diff_prefix="smt.diff",
-            expected_counts="REGRESSIONS 2{le}STATS{le}1 0 2{le}2 0 1".format(le=lineEnding),
+            expected_counts="REGRESSIONS 2{le}STATS{le}1 0 2{le}2 0 1".format(
+                le=line_ending
+            ),
         )
 
     def test_dump_count_big_table(self):
@@ -490,7 +496,9 @@ class TableGeneratorIntegrationTests(unittest.TestCase):
             ],
             table_prefix="big-table.table",
             diff_prefix="big-table.diff",
-            expected_counts="REGRESSIONS 4{le}STATS{le}338 8 136{le}315 8 161{le}321 8 155".format(le=lineEnding),
+            expected_counts="REGRESSIONS 4{le}STATS{le}338 8 136{le}315 8 161{le}321 8 155".format(
+                le=line_ending
+            ),
         )
 
     def test_dump_count_big_table_ignore_flapping_timeout_regressions(self):
@@ -512,7 +520,9 @@ class TableGeneratorIntegrationTests(unittest.TestCase):
             ],
             table_prefix="big-table.table",
             diff_prefix="big-table.diff",
-            expected_counts="REGRESSIONS 3{le}STATS{le}338 8 136{le}315 8 161{le}321 8 155".format(le=lineEnding),
+            expected_counts="REGRESSIONS 3{le}STATS{le}338 8 136{le}315 8 161{le}321 8 155".format(
+                le=line_ending
+            ),
         )
 
     def test_multi_table_xml(self):
@@ -658,7 +668,9 @@ class TableGeneratorIntegrationTests(unittest.TestCase):
             here, "expected", "test.2015-03-03_1613.results.predicateAnalysis" + ".csv"
         )
         # Windows uses \r\n while Unix uses \n for line endings, so use only \n when comparing
-        output = benchexec.tablegenerator.util.fix_line_endings_if_on_windows(output.strip())
+        output = benchexec.tablegenerator.util.fix_line_endings_if_on_windows(
+            output.strip()
+        )
         self.assertMultiLineEqual(output, expected)
 
     def test_format_csv(self):
